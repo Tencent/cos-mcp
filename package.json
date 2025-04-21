@@ -1,0 +1,69 @@
+{
+  "name": "cos-mcp",
+  "version": "1.0.8",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "cos-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "dev": "nodemon --watch src -e ts --exec \"npm run build && node dist/index.js\"",
+    "dev:watch": "cross-env NODE_ENV=development tsup --watch",
+    "build": "tsc && shx chmod +x dist/index.js",
+    "watch": "tsc --watch",
+    "start": "npm run build && node ./dist/index.js",
+    "start:sse": "npm run build && node ./dist/index.js --connectType=sse",
+    "inspect": "npx @modelcontextprotocol/inspector",
+    "publish:release": "npm run build && npm publish --access public",
+    "publish:local": "npm run build && npm pack",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "test": "npx jest"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "mcp",
+    "cos",
+    "ci",
+    "upload",
+    "storage",
+    "ai"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "/"
+  },
+  "author": "shawnzhang,weiyankong",
+  "license": "MIT",
+  "description": "基于MCP协议的腾讯云COS MCP Server，无需编码即可让大模型快速接入腾讯云存储(COS)和数据万象(CI)能力",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.9.0",
+    "cos-nodejs-sdk-v5": "^2.14.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "yargs": "^17.7.2",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/electron": "^1.4.38",
+    "@types/express": "^5.0.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.10",
+    "@types/yargs": "^17.0.33",
+    "@typescript-eslint/eslint-plugin": "^8.29.1",
+    "@typescript-eslint/parser": "^8.29.1",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
+    "globals": "^16.0.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.3",
+    "shx": "^0.3.4",
+    "ts-jest": "^29.3.2",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.29.1"
+  }
+}

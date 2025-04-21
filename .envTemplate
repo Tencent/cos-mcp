@@ -1,0 +1,12 @@
+connectType='stdio'
+port='9000'
+
+cosConfig='{"Region":"yourRegion","Bucket":"yourBucket","SecretId":"yourSecretId","SecretKey":"yourSecretKey","DatasetName":"yourDatasetName"}'
+
+或是
+
+Region='yourRegion'
+Bucket='yourBucket'
+SecretId='yourSecretId'
+SecretKey='yourSecretKey'
+DatasetName="yourDatasetName"
