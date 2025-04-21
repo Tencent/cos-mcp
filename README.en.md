@@ -3,7 +3,7 @@ English | [中文](README.md)
 # Tencent Cloud COS MCP Server 🚀🚀🚀
 
 <p align="center">
-  <img alt="logo" src="./src/img/logo.png"/>
+  <img alt="logo" src="https://raw.githubusercontent.com/Tencent/cos-mcp/master/src/img/logo.png"/>
 </p>
 
 Tencent Cloud COS MCP Server based on the MCP protocol enables large models to quickly integrate with Tencent Cloud Storage (COS) and Data Processing (CI) capabilities without coding.
@@ -42,13 +42,13 @@ Tencent Cloud COS MCP Server based on the MCP protocol enables large models to q
 ## 🌟 Feature Examples
 
 1. Upload files to COS  
-   ![eg1](./src/img/eg1.png)
+   ![eg1](https://raw.githubusercontent.com/Tencent/cos-mcp/master/src/img/eg1.png)
 2. Image quality assessment  
-   ![eg3](./src/img/eg3.png)
+   ![eg3](https://raw.githubusercontent.com/Tencent/cos-mcp/master/src/img/eg3.png)
 3. Natural language image search  
-   ![eg2](./src/img/eg2.png)
+   ![eg2](https://raw.githubusercontent.com/Tencent/cos-mcp/master/src/img/eg2.png)
 4. Video frame extraction  
-   ![eg15](./src/img/eg15.png)
+   ![eg15](https://raw.githubusercontent.com/Tencent/cos-mcp/master/src/img/eg15.png)
 
 ---
 

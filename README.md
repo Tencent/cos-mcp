@@ -3,7 +3,7 @@
 # 腾讯云 COS MCP Server 🚀🚀🚀
 
 <p align="center">
-  <img alt="logo" src="./src/img/logo.png"/>
+  <img alt="logo" src="https://raw.githubusercontent.com/Tencent/cos-mcp/master/src/img/logo.png"/>
 </p>
 
 基于 MCP 协议的腾讯云 COS MCP Server，无需编码即可让大模型快速接入腾讯云存储 (COS) 和数据万象 (CI) 能力。
@@ -42,13 +42,13 @@
 ## 🌟 功能示例
 
 1. 上传文件到 COS  
-   ![eg1](./src/img/eg1.png)
+   ![eg1](https://raw.githubusercontent.com/Tencent/cos-mcp/master/src/img/eg1.png)
 2. 图片质量评估  
-   ![eg3](./src/img/eg3.png)
+   ![eg3](https://raw.githubusercontent.com/Tencent/cos-mcp/master/src/img/eg3.png)
 3. 自然语言检索图片  
-   ![eg2](./src/img/eg2.png)
+   ![eg2](https://raw.githubusercontent.com/Tencent/cos-mcp/master/src/img/eg2.png)
 4. 视频截帧  
-   ![eg15](./src/img/eg15.png)
+   ![eg15](https://raw.githubusercontent.com/Tencent/cos-mcp/master/src/img/eg15.png)
 
 ---
 
