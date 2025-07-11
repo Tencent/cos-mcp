@@ -83,7 +83,7 @@ export function createCosMcpServer(config: ServerConfig) {
 
   server.tool(
     'putObject',
-    '上传文件到存储桶',
+    '上传本地文件到存储桶',
     {
       filePath: z.string().describe('文件路径 (包含文件名)'),
       fileName: z.string().optional().describe('文件名 （存在存储桶里的名称）'),
@@ -103,13 +103,64 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );
 
+  server.tool(
+    'putObjectSourceUrl',
+    '通过 url下载文件并将文件上传到存储桶',
+    {
+      sourceUrl: z.string().describe('可下载的文件 url'),
+      fileName: z.string().optional().describe('文件名 （存在存储桶里的名称）'),
+      targetDir: z
+        .string()
+        .optional()
+        .describe('目标目录 （存在存储桶的哪个目录）'),
+    },
+    async ({ sourceUrl, fileName, targetDir}) => {
+      const res = await COSInstance.uploadFileSourceUrl({
+        targetDir,
+        fileName,
+        sourceUrl,
+      });
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(res.data, null, 2),
+          },
+        ],
+        isError: !res.isSuccess,
+      };
+    },
+  );
+
+
+  server.tool(
+    'getObjectUrl',
+    '获取存储桶内的文件的带签名的下载链接',
+    {
+      objectKey: z.string().describe('文件的路径'),
+    },
+    async ({ objectKey = '/' }) => {
+      const res = await COSInstance.getObjectUrl(objectKey);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(res.data, null, 2),
+            },
+          ],
+          isError: !res.isSuccess,
+        };
+    },
+  );
+
+  
   server.tool(
     'getObject',
     '下载存储桶内的文件',
@@ -118,14 +169,20 @@ export function createCosMcpServer(config: ServerConfig) {
     },
     async ({ objectKey = '/' }) => {
       const res = await COSInstance.getObject(objectKey);
+      if (!res.isSuccess) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(res.data, null, 2),
+            },
+          ],
+          isError: true
+        };
+      }
       return {
-        content: [
-          {
-            type: 'text',
-            text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
-          },
-        ],
+        content: [res.data] as any,
+        isError: false,
       };
     },
   );
@@ -142,9 +199,9 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );
@@ -164,9 +221,9 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );
@@ -184,9 +241,9 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );
@@ -204,9 +261,9 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );
@@ -226,9 +283,9 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );
@@ -248,9 +305,9 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );
@@ -271,9 +328,9 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );
@@ -293,9 +350,9 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );
@@ -314,9 +371,9 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );
@@ -336,9 +393,9 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );
@@ -356,9 +413,9 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );
@@ -377,9 +434,9 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );
@@ -398,9 +455,9 @@ export function createCosMcpServer(config: ServerConfig) {
           {
             type: 'text',
             text: JSON.stringify(res.data, null, 2),
-            isError: res.isSuccess ? false : true,
           },
         ],
+        isError: !res.isSuccess,
       };
     },
   );

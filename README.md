@@ -1,6 +1,7 @@
 中文 | [English](README.en.md)
 
 # 腾讯云 COS MCP Server 🚀🚀🚀
+ ![](https://badge.mcpx.dev?type=server 'MCP Server') [![npm Version](https://img.shields.io/npm/v/cos-mcp)](https://www.npmjs.com/package/cos-mcp) [![license](http://img.shields.io/badge/license-BSD3-brightgreen.svg?style=flat)](License.txt)
 
 <p align="center">
   <img alt="logo" src="https://raw.githubusercontent.com/Tencent/cos-mcp/master/src/img/logo.png"/>
@@ -256,8 +257,3 @@ npm run build
    --cos-config='{\"Region\":\"yourRegion\",\"Bucket\":\"BucketName-APPID\",\"SecretId\":\"yourSecretId\",\"SecretKey\":\"yourSecretKey\",\"DatasetName\":\"datasetName\"}' --port=3001 --connectType=sse
    ```
 
----
-
-## 📄 许可证
-
-[![license](http://img.shields.io/badge/license-BSD3-brightgreen.svg?style=flat)](License.txt)

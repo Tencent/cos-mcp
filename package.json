@@ -1,6 +1,6 @@
 {
   "name": "cos-mcp",
-  "version": "1.0.8",
+  "version": "1.0.11",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -44,7 +44,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "yargs": "^17.7.2",
-    "zod": "^3.24.2"
+    "zod": "^3.24.2",
+    "axios": "^1.6.2"
   },
   "devDependencies": {
     "@types/electron": "^1.4.38",

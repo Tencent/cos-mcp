@@ -7,12 +7,16 @@ export const generateOutPutFileId = (objectKey: string) => {
     String(now.getMonth() + 1).padStart(2, '0'), // 月份补零
     String(now.getDate()).padStart(2, '0'), // 日期补零
   ].join('');
-  const lastDotIndex = objectKey.lastIndexOf('.');
-  const base =
-    lastDotIndex === -1 ? objectKey : objectKey.substring(0, lastDotIndex);
-
-  const outPutFileid = `${formattedDate}_${base}_${generateCode()}`;
-  return encodeURIComponent(outPutFileid);
+  if (objectKey) {
+    const lastDotIndex = objectKey.lastIndexOf('.');
+    const base =
+      lastDotIndex === -1 ? objectKey : objectKey.substring(0, lastDotIndex);
+    const outPutFileid = `${formattedDate}_${base}_${generateCode()}`;
+    return encodeURIComponent(outPutFileid);
+  } else {
+    const outPutFileid = `${formattedDate}_${generateCode()}`;
+    return encodeURIComponent(outPutFileid);
+  }
 };
 
 export const generateCode = (length = 6, useSecure = true) => {
