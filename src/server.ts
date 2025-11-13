@@ -110,6 +110,114 @@ export function createCosMcpServer(config: ServerConfig) {
     },
   );
 
+
+  server.tool(
+    'putString',
+    '上传字符串内容到存储桶',
+    {
+      content: z.string().describe('要上传的字符串内容'),
+      fileName: z.string().describe('文件名 (存在存储桶里的名称)'),
+      targetDir: z
+        .string()
+        .optional()
+        .describe('目标目录 (存在存储桶的哪个目录)'),
+      contentType: z
+        .string()
+        .optional()
+        .describe('内容类型，如 text/plain, application/json 等，默认为 text/plain'),
+    },
+    async ({ content, fileName, targetDir, contentType }) => {
+      const res = await COSInstance.uploadString({
+        content,
+        fileName,
+        targetDir,
+        contentType,
+      });
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(res.data, null, 2),
+          },
+        ],
+        isError: !res.isSuccess,
+      };
+    },
+  );
+
+  server.tool(
+    'putBase64',
+    '上传base64编码内容到存储桶',
+    {
+      base64Content: z.string().describe('base64编码的内容'),
+      fileName: z.string().describe('文件名 (存在存储桶里的名称)'),
+      targetDir: z
+        .string()
+        .optional()
+        .describe('目标目录 (存在存储桶的哪个目录)'),
+      contentType: z
+        .string()
+        .optional()
+        .describe('内容类型，如 image/png, application/pdf 等，默认为 application/octet-stream'),
+    },
+    async ({ base64Content, fileName, targetDir, contentType }) => {
+      const res = await COSInstance.uploadBase64({
+        base64Content,
+        fileName,
+        targetDir,
+        contentType,
+      });
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(res.data, null, 2),
+          },
+        ],
+        isError: !res.isSuccess,
+      };
+    },
+  );
+
+  server.tool(
+    'putBuffer',
+    '上传buffer内容到存储桶',
+    {
+      content: z.string().describe('buffer内容字符串'),
+      fileName: z.string().describe('文件名 (存在存储桶里的名称)'),
+      targetDir: z
+        .string()
+        .optional()
+        .describe('目标目录 (存在存储桶的哪个目录)'),
+      contentType: z
+        .string()
+        .optional()
+        .describe('内容类型，如 image/png, application/pdf 等，默认为 application/octet-stream'),
+      encoding: z
+        .enum(['hex', 'base64', 'utf8', 'ascii', 'binary'])
+        .optional()
+        .describe('字符串编码格式，默认为utf8。hex=十六进制，base64=Base64编码，utf8=UTF-8文本，ascii=ASCII文本，binary=二进制'),
+    },
+    async ({ content, fileName, targetDir, contentType, encoding }) => {
+      const res = await COSInstance.uploadBuffer({
+        content,
+        fileName,
+        targetDir,
+        contentType,
+        encoding,
+      });
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(res.data, null, 2),
+          },
+        ],
+        isError: !res.isSuccess,
+      };
+    },
+  );
+
   server.tool(
     'putObjectSourceUrl',
     '通过 url下载文件并将文件上传到存储桶',

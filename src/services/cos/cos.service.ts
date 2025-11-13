@@ -15,6 +15,31 @@ export const UploadFileParamsSchema = z.object({
 });
 export type UploadFileParams = z.infer<typeof UploadFileParamsSchema>;
 
+export const UploadStringParamsSchema = z.object({
+  content: z.string(),
+  fileName: z.string(),
+  targetDir: z.string().optional(),
+  contentType: z.string().optional()
+});
+export type UploadStringParams = z.infer<typeof UploadStringParamsSchema>;
+
+export const UploadBase64ParamsSchema = z.object({
+  base64Content: z.string(),
+  fileName: z.string(),
+  targetDir: z.string().optional(),
+  contentType: z.string().optional()
+});
+export type UploadBase64Params = z.infer<typeof UploadBase64ParamsSchema>;
+
+export const UploadBufferParamsSchema = z.object({
+  content: z.string(),
+  fileName: z.string(),
+  targetDir: z.string().optional(),
+  contentType: z.string().optional(),
+  encoding: z.enum(['hex', 'base64', 'utf8', 'ascii', 'binary']).optional()
+});
+export type UploadBufferParams = z.infer<typeof UploadBufferParamsSchema>;
+
 export class CosService {
   bucket: string;
   region: string;
@@ -23,6 +48,22 @@ export class CosService {
     this.bucket = bucket;
     this.region = region;
     this.cos = cos;
+  }
+
+  /**
+   * 构建COS路径
+   * @param fileName 文件名
+   * @param targetDir 目标目录
+   * @returns COS路径
+   */
+  private buildCosPath(fileName: string, targetDir?: string): string {
+    if (!targetDir) {
+      return fileName;
+    }
+    
+    // 规范化目标目录：移除头尾斜杠
+    const normalizedDir = targetDir.replace(/^\/+|\/+$/g, '');
+    return normalizedDir ? `${normalizedDir}/${fileName}` : fileName;
   }
 
   //   /**
@@ -46,15 +87,8 @@ export class CosService {
       // 确定文件名
       const actualFileName = fileName || path.basename(filePath);
 
-      // 构建COS路径，确保正斜杠格式
-      let cosPath = actualFileName;
-      if (targetDir) {
-        // 规范化目标目录：移除头尾斜杠，然后加上结尾斜杠
-        const normalizedDir = targetDir.replace(/^\/+|\/+$/g, '');
-        cosPath = normalizedDir
-          ? `${normalizedDir}/${actualFileName}`
-          : actualFileName;
-      }
+      // 构建COS路径
+      const cosPath = this.buildCosPath(actualFileName, targetDir);
 
       // 上传文件
       const cosParams: COS.UploadFileParams = {
@@ -65,6 +99,126 @@ export class CosService {
       };
 
       const result = await this.cos.uploadFile(cosParams);
+
+      return {
+        isSuccess: true,
+        message: '上传成功',
+        data: result,
+      };
+    } catch (error) {
+      return {
+        isSuccess: false,
+        message: '上传失败',
+        data: error,
+      };
+    }
+  }
+
+  /**
+   * 上传字符串内容到COS
+   * @param params 上传参数
+   * @returns 上传结果
+   */
+  async uploadString(params: UploadStringParams) {
+    const validParams = UploadStringParamsSchema.parse(params);
+    const { content, fileName, targetDir = '', contentType = 'text/plain' } = validParams;
+    
+    try {
+      // 构建COS路径
+      const cosPath = this.buildCosPath(fileName, targetDir);
+
+      // 上传字符串内容
+      const cosParams: COS.PutObjectParams = {
+        Bucket: this.bucket,
+        Region: this.region,
+        Key: cosPath,
+        Body: content,
+        ContentType: contentType,
+      };
+
+      const result = await this.cos.putObject(cosParams);
+
+      return {
+        isSuccess: true,
+        message: '上传成功',
+        data: result,
+      };
+    } catch (error) {
+      return {
+        isSuccess: false,
+        message: '上传失败',
+        data: error,
+      };
+    }
+  }
+
+  /**
+   * 上传base64内容到COS
+   * @param params 上传参数
+   * @returns 上传结果
+   */
+  async uploadBase64(params: UploadBase64Params) {
+    const validParams = UploadBase64ParamsSchema.parse(params);
+    const { base64Content, fileName, targetDir = '', contentType = 'application/octet-stream' } = validParams;
+    
+    try {
+      // 构建COS路径
+      const cosPath = this.buildCosPath(fileName, targetDir);
+
+      // 将base64转换为Buffer
+      const buffer = Buffer.from(base64Content.split(',')[1] , 'base64');
+
+      // 上传buffer内容
+      const cosParams: COS.PutObjectParams = {
+        Bucket: this.bucket,
+        Region: this.region,
+        Key: cosPath,
+        Body: buffer,
+        ContentType: contentType,
+      };
+
+      const result = await this.cos.putObject(cosParams);
+
+      return {
+        isSuccess: true,
+        message: '上传成功',
+        data: result,
+      };
+    } catch (error) {
+      return {
+        isSuccess: false,
+        message: '上传失败',
+        data: error,
+      };
+    }
+  }
+
+  /**
+   * 上传buffer内容到COS
+   * @param params 上传参数
+   * @returns 上传结果
+   */
+  async uploadBuffer(params: UploadBufferParams) {
+    const validParams = UploadBufferParamsSchema.parse(params);
+    const { content, fileName, targetDir = '', contentType = 'application/octet-stream', encoding } = validParams;
+    
+    try {
+      // 构建COS路径
+      const cosPath = this.buildCosPath(fileName, targetDir);
+
+      // 根据编码类型转换为Buffer
+      const buffer = encoding ? Buffer.from(content, encoding) : Buffer.from(content);
+
+      // 上传buffer内容
+      const cosParams: COS.PutObjectParams = {
+        Bucket: this.bucket,
+        Region: this.region,
+        Key: cosPath,
+        Body: buffer,
+        ContentType: contentType,
+      };
+
+      const result = await this.cos.putObject(cosParams);
 
       return {
         isSuccess: true,
@@ -97,14 +251,7 @@ export class CosService {
         responseType: 'stream'
       });
       const actualFileName = fileName ? fileName : generateOutPutFileId('');
-      let cosPath = actualFileName;
-      if (targetDir) {
-        // 规范化目标目录：移除头尾斜杠，然后加上结尾斜杠
-        const normalizedDir = targetDir.replace(/^\/+|\/+$/g, '');
-        cosPath = normalizedDir
-          ? `${normalizedDir}/${actualFileName}`
-          : actualFileName;
-      }
+      const cosPath = this.buildCosPath(actualFileName, targetDir);
       const req = response.data;
       const passThrough = new PassThrough();
       const result = await this.cos.putObject({
