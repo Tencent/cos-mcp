@@ -50,6 +50,41 @@ export class CosService {
     this.cos = cos;
   }
 
+
+  private processBase64(base64 = '', contentType = '') {
+  // 基础验证
+  if (typeof base64 !== 'string') {
+    throw new Error('base64参数必须是字符串');
+  }
+  
+  if (typeof contentType !== 'string') {
+    throw new Error('contentType参数必须是字符串');
+  }
+  
+  let base64Data = base64;
+  let finalContentType = contentType;
+  
+  // 检查base64是否包含数据头
+  const dataUriRegex = /^data:([^;]+);base64,/;
+  const match = base64.match(dataUriRegex);
+  
+  if (match) {
+    // 如果base64有数据头，提取纯数据和contentType
+    const headerEndIndex = base64.indexOf(',') + 1;
+    base64Data = base64.substring(headerEndIndex);
+    
+    // 如果没有传递contentType，则从base64头中提取
+    if (!contentType.trim()) {
+      finalContentType = match[1];
+    }
+  }
+  
+  return {
+    base64Data: base64Data.trim(),
+    contentType: finalContentType.trim()
+  };
+}
+
   /**
    * 构建COS路径
    * @param fileName 文件名
@@ -159,14 +194,17 @@ export class CosService {
    */
   async uploadBase64(params: UploadBase64Params) {
     const validParams = UploadBase64ParamsSchema.parse(params);
-    const { base64Content, fileName, targetDir = '', contentType = 'application/octet-stream' } = validParams;
+    let { base64Content, fileName, targetDir = '' } = validParams;
     
     try {
       // 构建COS路径
       const cosPath = this.buildCosPath(fileName, targetDir);
 
+      // 处理base64
+      let { base64Data, contentType } = this.processBase64(base64Content, validParams.contentType);
+
       // 将base64转换为Buffer
-      const buffer = Buffer.from(base64Content.split(',')[1] , 'base64');
+      const buffer = Buffer.from(base64Data, 'base64');
 
       // 上传buffer内容
       const cosParams: COS.PutObjectParams = {
@@ -174,7 +212,7 @@ export class CosService {
         Region: this.region,
         Key: cosPath,
         Body: buffer,
-        ContentType: contentType,
+        ContentType: contentType || 'application/octet-stream',
       };
 
       const result = await this.cos.putObject(cosParams);

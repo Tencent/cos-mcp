@@ -158,7 +158,7 @@ export function createCosMcpServer(config: ServerConfig) {
       contentType: z
         .string()
         .optional()
-        .describe('内容类型，如 image/png, application/pdf 等，默认为 application/octet-stream'),
+        .describe('内容类型，如 image/png (图片), application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document (文档) 等，如果base64带头部则默认自带的头部否则默认为 application/octet-stream'),
     },
     async ({ base64Content, fileName, targetDir, contentType }) => {
       const res = await COSInstance.uploadBase64({
